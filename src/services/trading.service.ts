@@ -8,12 +8,17 @@ const NETWORK_API_URLS = {
     // Add other networks here
 };
 
+
+const API_URL = process.env.API_URL || ''
+const API_KEY = process.env.API_KEY || ''
+const API_SECRET = process.env.API_SECRET || ''
+
 export default class TradingService {
     
     static async getTokenPrice(symbol: string, network: string) {
         try {
             const apiUrl = NETWORK_API_URLS[network as keyof typeof NETWORK_API_URLS];
-            const response = await axios.post(`${apiUrl}`, {
+            const response = await axios.post(`${API_URL}`, {
                 jsonrpc: '2.0',
                 method: 'eth_getPrice',
                 params: [symbol],
@@ -43,7 +48,7 @@ export default class TradingService {
 
             const signature = TradingService.generateSignature(params, API_SECRET);
 
-            const response = await axios.post(`${}/order`, null, {
+            const response = await axios.post(`${API_URL}/order`, null, {
                 params: {
                     ...params,
                     signature,
@@ -75,7 +80,7 @@ export default class TradingService {
 
             const signature = await TradingService.generateSignature(params, API_SECRET);
 
-            const response = await axios.post(`${}/order`, null, {
+            const response = await axios.post(`${API_URL}/order`, null, {
                 params: {
                     ...params,
                     signature,
@@ -110,7 +115,7 @@ export default class TradingService {
                 symbol: symbol.toUpperCase() + 'USDT',
             };
     
-            const response = await axios.get(`${}/ticker/24hr`, {
+            const response = await axios.get(`${API_URL}/ticker/24hr`, {
                 params: {
                     ...params,
                     apikey: API_KEY
