@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
     getAllTokenPrice,
+    getATokenPrice
     // placeBuyOrder,
     // placeSellOrder,
     // summary
@@ -11,6 +12,7 @@ import {
 const TradingRouter = Router();
 
 TradingRouter.get('/all-token', getAllTokenPrice);
+TradingRouter.get('/token/:token_name', getATokenPrice);
 
 // TradingRouter.post('/buy-order', placeBuyOrder);
 
