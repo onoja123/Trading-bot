@@ -6,26 +6,34 @@ const NETWORK_API_URLS = {
   BSC: "https://bsc-pokt.nodies.app",
 };
 
-const API_URL = process.env.API_URL || "";
+export const API_URL = process.env.BINANCE_API_URL || "";
 const API_KEY = process.env.API_KEY || "";
 const API_SECRET = process.env.API_SECRET || "";
 
 export default class TradingService {
-  static async getTokenPrice(symbol: string, network: string) {
-    try {
-      const apiUrl = NETWORK_API_URLS[network as keyof typeof NETWORK_API_URLS];
-      const response = await axios.post(`${API_URL}`, {
-        jsonrpc: "2.0",
-        method: "eth_getPrice",
-        params: [symbol],
-        id: 1,
-      });
 
-      const data = response.data.result;
-      return parseFloat(data);
+  
+  static async getAllTokenPrice() {
+    try {
+      const API_URL = process.env.BINANCE_API_URL || "";
+      const response = await axios.get(`${API_URL}/api/v3/ticker/price`, {
+      });
+      return response.data;
     } catch (error) {
       console.error("Error fetching token price:", error);
       return null;
+    }
+  }
+
+  static async getATokenPrice(symbol_name: string) {
+    try {
+      const API_URL = process.env.BINANCE_API_URL || "";
+      const symbolNameUpperCase = symbol_name.toUpperCase();
+      const response = await axios.get(`${API_URL}/api/v3/ticker/price?symbol=${symbolNameUpperCase}`, {
+      });
+      return response.data;
+    } catch (error) {
+      return 'Token symbol not found. Please confirm the name of the token';
     }
   }
 

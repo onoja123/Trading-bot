@@ -13,23 +13,33 @@ import ResponseHelper from "../utils/response";
  **/
 export const getAllTokenPrice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-        const tokens = ['BTC', 'ETH', 'BNB'];
-
-        const tokenPrices: { [token: string]: number } = {};
-
-        for (const token of tokens) {
-            const price = await TradingService.getTokenPrice(token + 'USDT', 'mainnet');
-            if (price !== null) {
-                tokenPrices[token] = price;
-            } else {
-                console.error(`Price for ${token} is null.`);
-            }
-        }
-
+        const prices = await TradingService.getAllTokenPrice()
+    
         ResponseHelper.sendSuccessResponse(res, { 
             statusCode: ResponseHelper.OK, 
-            data: tokenPrices
+            data: prices
+        });
+    } catch (error) {
+        return next(new AppError("An error occurred. Please try again.", ResponseHelper.INTERNAL_SERVER_ERROR));
+    }
+});
+
+
+/**
+ * @description Get a token price
+ * @route `/api/v1/trading/token/{token_name}`
+ * @access Private
+ * @type GET
+ **/
+
+export const getATokenPrice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const symbol_name = req.params.token_name
+        const price = await TradingService.getATokenPrice(symbol_name)
+    
+        ResponseHelper.sendSuccessResponse(res, { 
+            statusCode: ResponseHelper.OK, 
+            data: price
         });
     } catch (error) {
         return next(new AppError("An error occurred. Please try again.", ResponseHelper.INTERNAL_SERVER_ERROR));
